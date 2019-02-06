@@ -168,12 +168,12 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("def-error", "" + error);
+                        Log.i("def-error", "" + error.networkResponse.statusCode);
                         // 302 treated as error, let's assume it wall garden
-
-//                        startConnection(); // start decryption
-                        decryptCredentials();
-
+                        if (error.networkResponse.statusCode == WALL_GARDEN_STATUS_CODE) {
+                            Log.i("def-error", "Captive portal detected");
+                            decryptCredentials();
+                        }
 
 
                     }
