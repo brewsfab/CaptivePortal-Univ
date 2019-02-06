@@ -24,6 +24,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements CryptoHelper.CredentialNeededListener{
 
+    private static final int WALL_GARDEN_STATUS_CODE = 302;
     private KeyguardManager keyguardManager;
     private String encryptedCred;
     private TextView tv;
