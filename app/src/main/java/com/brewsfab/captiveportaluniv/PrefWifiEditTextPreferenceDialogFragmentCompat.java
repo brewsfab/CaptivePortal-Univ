@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.preference.DialogPreference;
 import android.support.v7.preference.PreferenceDialogFragmentCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +46,6 @@ public class PrefWifiEditTextPreferenceDialogFragmentCompat extends PreferenceDi
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(getContext(),"Detect clicked",Toast.LENGTH_LONG).show();
-//                    String wifiName = Utils.getCurrentWifiName();
                     prefWifi_ed.setText(activeWifiName);
                 }
             });

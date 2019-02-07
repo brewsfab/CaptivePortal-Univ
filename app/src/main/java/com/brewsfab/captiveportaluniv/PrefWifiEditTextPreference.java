@@ -20,12 +20,12 @@ public class PrefWifiEditTextPreference extends DialogPreference {
     }
 
     public PrefWifiEditTextPreference(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
         setPersistent(true);
     }
 
     public PrefWifiEditTextPreference(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     @Override
@@ -33,10 +33,6 @@ public class PrefWifiEditTextPreference extends DialogPreference {
         return mPrefWifiEditTextPreferenceId;
     }
 
-
-//    public void setPreferredWifi(String preferredWifi) {
-//        persistString(preferredWifi);
-//    }
 
 
     public String getText() {

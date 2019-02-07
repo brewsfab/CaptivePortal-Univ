@@ -1,28 +1,21 @@
 package com.brewsfab.captiveportaluniv;
 
 import android.app.KeyguardManager;
-import android.content.Context;
-import android.content.Intent;
 import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.UserNotAuthenticatedException;
+import android.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-
-import android.util.Base64;
-import android.widget.Toast;
-
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -48,10 +41,8 @@ public class CryptoHelper {
     private static KeyguardManager keyguardManager;
 
 
-
-
-    public static void init(KeyguardManager kgm){
-       keyguardManager = kgm;
+    public static void init(KeyguardManager kgm) {
+        keyguardManager = kgm;
     }
 
 
@@ -60,15 +51,14 @@ public class CryptoHelper {
     }
 
     public static void unsetmCredentialNeededListener(CredentialNeededListener credentialNeededListener) {
-        if(credentialNeededListener!=null)
-            mCredentialNeededListener=null;
+        if (credentialNeededListener != null)
+            mCredentialNeededListener = null;
     }
 
 
+    public static String encryptText(String clearText) {
 
-    public static String encryptText(String clearText){
-
-        if(!keyguardManager.isDeviceSecure()){
+        if (!keyguardManager.isDeviceSecure()) {
             Utils.Log("the device is not secured");
             return ERROR_DEVICE_NOT_SECURE;
         }
@@ -91,11 +81,10 @@ public class CryptoHelper {
             String encryptedWhole = encryptedCred + "]" +
                     encrypteddIv;
             Utils.Log(encryptedWhole);
-             mCredentialNeededListener.successEncryption(encryptedWhole);
+            mCredentialNeededListener.successEncryption(encryptedWhole);
             return encryptedWhole;
-        }catch (UserNotAuthenticatedException e){
-            //Todo add the authentication screen mechanism for encrypting
-            Utils.Log("when user not authenticated, text is: "+clearText);
+        } catch (UserNotAuthenticatedException e) {
+            Utils.Log("when user not authenticated, text is: " + clearText);
             mCredentialNeededListener.displayConfirmCredentials(ENCRYPT_CREDENTIALS);
             return USER_NOT_REGISTERED;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | UnsupportedEncodingException | BadPaddingException | IllegalBlockSizeException e) {
@@ -106,17 +95,15 @@ public class CryptoHelper {
     }
 
 
+    public static String decryptText(String encryptedText) {
 
-
-    public static String decryptText(String encryptedText){
-
-        if(!keyguardManager.isDeviceSecure()){
+        if (!keyguardManager.isDeviceSecure()) {
             return ERROR_DEVICE_NOT_SECURE;
         }
 
-        String[] credentials = encryptedText.split("]",2);
+        String[] credentials = encryptedText.split("]", 2);
         byte[] encryptedIVBytes = Base64.decode(credentials[1], Base64.DEFAULT);
-        byte[] encryptedCreds = Base64.decode(credentials[0],Base64.DEFAULT);
+        byte[] encryptedCreds = Base64.decode(credentials[0], Base64.DEFAULT);
 
         try {
             KeyStore keyStore = KeyStore.getInstance(ANDROID_KEYSTORE);
@@ -131,12 +118,9 @@ public class CryptoHelper {
             String decryptedText = new String(credBytes, "UTF-8");
 
             mCredentialNeededListener.successDecryption(new String(credBytes, "UTF-8"));
-//            return decryptedText
             return decryptedText;
 
-        }catch (UserNotAuthenticatedException e){
-            //Todo add the authentication screen mechanism for decrypting
-
+        } catch (UserNotAuthenticatedException e) {
             mCredentialNeededListener.displayConfirmCredentials(DECRYPT_CREDENTIALS);
             return USER_NOT_REGISTERED;
         } catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchPaddingException | UnrecoverableKeyException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
@@ -145,33 +129,23 @@ public class CryptoHelper {
         }
 
     }
-//
-//    private  static void displayConfirmCredential() {
-//
-//        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-//
-//        if(!keyguardManager.isDeviceSecure()){
-//            Toast.makeText(this, "Secure lock screen has not been set up! ",Toast.LENGTH_LONG).show();
-//        }
-//
-//        Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(null,null);
-//    }
+
 
     private static SecretKey createKey() {
 
-        if(!keyguardManager.isDeviceSecure()){
+        if (!keyguardManager.isDeviceSecure()) {
             return null;
         }
 
         try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,ANDROID_KEYSTORE);
-            keyGenerator.init(new KeyGenParameterSpec.Builder(CAPTIVE_WIFI_KEY,KeyProperties.PURPOSE_ENCRYPT|KeyProperties.PURPOSE_DECRYPT)
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE);
+            keyGenerator.init(new KeyGenParameterSpec.Builder(CAPTIVE_WIFI_KEY, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setUserAuthenticationRequired(true)
                     .setUserAuthenticationValidityDurationSeconds(5) //set to -1 to authenticate everytime
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                     .build());
-            return  keyGenerator.generateKey();
+            return keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             throw new RuntimeException("Failed to create a symmetric key");
         }
@@ -179,9 +153,11 @@ public class CryptoHelper {
 
 
     public interface CredentialNeededListener {
-        void displayConfirmCredentials(int requestcode);
+        void displayConfirmCredentials(int requestCode);
+
         void successEncryption(String encryptedText);
-         void successDecryption(String decryptedText);
+
+        void successDecryption(String decryptedText);
     }
 }
 

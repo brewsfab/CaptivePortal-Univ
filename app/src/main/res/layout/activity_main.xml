@@ -4,25 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tv_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/tv_show"/>
+        android:text="Hello World!" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go to settings"
-        android:onClick="goToSecond"/>
+        android:onClick="goToSecond"
+        android:text="Go to settings" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Check network"
-        android:onClick="checkNetworkWall"/>
+        android:onClick="checkNetworkWall"
+        android:text="Check network" />
 
 </LinearLayout>

@@ -22,7 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements CryptoHelper.CredentialNeededListener{
+public class MainActivity extends AppCompatActivity implements CryptoHelper.CredentialNeededListener {
 
     private static final int WALL_GARDEN_STATUS_CODE = 302;
     private KeyguardManager keyguardManager;
@@ -52,34 +52,31 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
     }
 
 
-    public void decryptCredentials(){
+    public void decryptCredentials() {
 
-        //Get the SharedPreferences
         Utils.Log("start decrypt");
 
-//        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        encryptedCred = sharedPreferences.getString("credentials",null);
-        if(encryptedCred !=null){ //if credentials exist
+        //Get the Preference
+        encryptedCred = sharedPreferences.getString("credentials", null);
+        if (encryptedCred != null) { //if credentials exist
             CryptoHelper.decryptText(encryptedCred);
-        }else{
-            Utils.makeToast(this,"Please save your credentials");
+        } else {
+            Utils.makeToast(this, "Please save your credentials");
         }
 
 
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
         Utils.Log("relaunched decryption");
-        if(requestCode == CryptoHelper.DECRYPT_CREDENTIALS){
-            if(resultCode == RESULT_OK){
+        if (requestCode == CryptoHelper.DECRYPT_CREDENTIALS) {
+            if (resultCode == RESULT_OK) {
                 //TODO decrypt the text
                 Utils.Log("restarted decryption");
                 CryptoHelper.decryptText(encryptedCred);
-            }else{
+            } else {
                 Utils.Log("failed to decrypt");
                 //TODO dismiss the decryption process
             }
@@ -87,10 +84,10 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
     }
 
     @Override
-    public void displayConfirmCredentials(int requestcode) {
-        Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(null,null);
-        if(intent != null) {
-            startActivityForResult(intent, requestcode);
+    public void displayConfirmCredentials(int requestCode) {
+        Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
+        if (intent != null) {
+            startActivityForResult(intent, requestCode);
         }
     }
 
@@ -102,35 +99,9 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
     @Override
     public void successDecryption(String decryptedText) {
 //        Utils.Log("The DECRYPTED: "+decryptedText);
-//        tv.setText(decryptedText);
         startConnection(decryptedText);
 
     }
-
-//    private void getNetworkResponse() {
-//
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                tv.setText(response);
-//
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                tv.setText("The request did not work");
-//            }
-//        }){
-//            @Override
-//            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-////                statusCodeTv.setText(""+response.statusCode);
-//                Log.i("def",""+response.statusCode);
-//                return super.parseNetworkResponse(response);
-//            }
-//        };
-//
-//        NetworkRequester.getInstance(this).addToRequestQueue(stringRequest);
-//    }
 
 
 
@@ -139,15 +110,14 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
     }
 
 
-
     private void getNetworkResponse(Bundle currentWifiConnection) {
 
         String activeWifiName = currentWifiConnection.getString("wifiName");
         Network activeNetwork = currentWifiConnection.getParcelable("network");
 
-        String preferredNetork = sharedPreferences.getString("preferred_network",null);
+        String preferredNetork = sharedPreferences.getString("preferred_network", null);
 
-        if(activeWifiName != null && activeWifiName.equals(preferredNetork)){//Preferred network detected, check the network
+        if (activeWifiName != null && activeWifiName.equals(preferredNetork)) {//Preferred network detected, check the network
             Utils.Log("Preferred network detected, start checking");
 
             ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -162,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                Log.i("def-response",""+response);
+                        Log.i("def-response", "" + response);
 
 
                     }
@@ -181,13 +151,12 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
                 }) {
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                statusCodeTv.setText(""+response.statusCode);
                         int statusCode = response.statusCode;
                         Log.i("def", "" + statusCode);
                         if (statusCode != 204) {
 //                            startCaptivePortalNotification();
                             Utils.Log("IS WALL");
-                        }else{
+                        } else {
                             Utils.Log("ALready connnected");
                         }
                         return super.parseNetworkResponse(response);
@@ -200,25 +169,22 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
         }
 
 
-
     }
 
     private void startConnection(final String credentials) {
 
         Utils.Log("Dans startconnection()");
-//        String url = "http://httpbin.org/post";
-        String url = "https://aruba151.naist.jp/cgi-bin/login";
+        String url = "http://httpbin.org/post";
+//        String url = "https://aruba151.naist.jp/cgi-bin/login";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
@@ -227,22 +193,18 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
                 }
         ) {
             @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<String, String>();
-                String[] id = credentials.split(":",2);
-                params.put("user",id[0]);
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                String[] id = credentials.split(":", 2);
+                params.put("user", id[0]);
                 params.put("password", id[1]);
-//                params.put("cmd", "authenticate");
-//                params.put("Login", "Log+In");
 
                 return params;
             }
 
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                int statusCode = response.statusCode;
-                Utils.Log("Parsed responseCode: "+response.statusCode);
+                Utils.Log("Parsed responseCode: " + response.statusCode);
                 return super.parseNetworkResponse(response);
             }
         };

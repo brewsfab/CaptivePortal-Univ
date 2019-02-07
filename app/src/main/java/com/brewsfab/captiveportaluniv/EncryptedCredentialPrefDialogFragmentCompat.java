@@ -1,32 +1,23 @@
 package com.brewsfab.captiveportaluniv;
 
-import android.app.KeyguardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.DialogPreference;
 import android.support.v7.preference.PreferenceDialogFragmentCompat;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.StringJoiner;
-
-import static android.app.Activity.RESULT_OK;
-
 public class EncryptedCredentialPrefDialogFragmentCompat extends PreferenceDialogFragmentCompat {
 
     private EditText usernameEt, passwordEt;
-    private KeyguardManager keyguardManager;
 
     EncryptedCredentialListener mListener;
 
 
-
-    public static EncryptedCredentialPrefDialogFragmentCompat newInstance(String key){
+    public static EncryptedCredentialPrefDialogFragmentCompat newInstance(String key) {
         EncryptedCredentialPrefDialogFragmentCompat encryptedCredentialPrefDialogFragmentCompat = new EncryptedCredentialPrefDialogFragmentCompat();
         Bundle b = new Bundle(1);
-        b.putString(ARG_KEY,key);
+        b.putString(ARG_KEY, key);
         encryptedCredentialPrefDialogFragmentCompat.setArguments(b);
         return encryptedCredentialPrefDialogFragmentCompat;
     }
@@ -47,8 +38,8 @@ public class EncryptedCredentialPrefDialogFragmentCompat extends PreferenceDialo
         super.onAttach(context);
         try {
             mListener = (EncryptedCredentialListener) context;
-        }catch (ClassCastException e){
-            throw new ClassCastException(getActivity().toString()+" must implement EncryptedCredentialListener");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString() + " must implement EncryptedCredentialListener");
         }
     }
 
@@ -64,46 +55,25 @@ public class EncryptedCredentialPrefDialogFragmentCompat extends PreferenceDialo
     }
 
 
-//    private void setPreferenceText(String text) {
-//        DialogPreference preference = getPreference();
-//        if (preference instanceof EncryptedCredentialPreference) {
-//            EncryptedCredentialPreference encryptedCredentialPreference = ((EncryptedCredentialPreference) preference);
-//            encryptedCredentialPreference.setText(text);
-//            Utils.Log("encrypted preference");
-//        }
-//    }
 
 
     @Override
     public void onDialogClosed(boolean positiveResult) {
-        //Todo remove placeholder before production
-        if(positiveResult){
-            Utils.makeToast(this.getContext(),"positive clicked");
-//            Utils.Log(encryptedCredentials(usernameEt.getText().toString(),passwordEt.getText().toString()));
+        if (positiveResult) {
+            Utils.makeToast(this.getContext(), "positive clicked");
             mListener.onDialogPositiveClick(getPreference(), usernameEt.getText().toString(), passwordEt.getText().toString());
-        }else{
-//            Utils.makeToast(this.getContext(), "cancelled");
+        } else {
             mListener.onDialogNegativeClick(getPreference());
         }
 
     }
 
-    public interface EncryptedCredentialListener{
-//        void onDialogPositiveClick(DialogFragment dialogFragment, String user, String pass);
-//        void onDialogNegativeClick(DialogFragment dialogFragment);
-
+    public interface EncryptedCredentialListener {
         void onDialogPositiveClick(DialogPreference preference, String user, String pass);
+
         void onDialogNegativeClick(DialogPreference preference);
     }
 
-//    @Override
-//    public void displayConfirmCredentials(int requestcode, String text) {
-//        Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(null,null);
-//        if(intent != null) {
-//            intent.putExtra("user",text);
-//            startActivityForResult(intent, requestcode);
-//        }
-//    }
 
 
 }

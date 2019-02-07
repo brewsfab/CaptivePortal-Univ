@@ -13,13 +13,13 @@ public class NetworkRequester {
     private Context mContext;
 
 
-    private NetworkRequester(Context context){
+    private NetworkRequester(Context context) {
         this.mContext = context;
         mRequestQueue = getRequestQueue();
     }
 
-    public static synchronized NetworkRequester getInstance(Context context){
-        if(instance == null){
+    public static synchronized NetworkRequester getInstance(Context context) {
+        if (instance == null) {
             instance = new NetworkRequester(context);
         }
         return instance;
@@ -27,7 +27,7 @@ public class NetworkRequester {
 
 
     public RequestQueue getRequestQueue() {
-        if(mRequestQueue==null){
+        if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(mContext.getApplicationContext());
         }
         return mRequestQueue;

@@ -13,15 +13,15 @@ public class EncryptedCredentialPreference extends DialogPreference {
     }
 
     public EncryptedCredentialPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr,defStyleAttr);
+        this(context, attrs, defStyleAttr, defStyleAttr);
     }
 
     public EncryptedCredentialPreference(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public EncryptedCredentialPreference(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
 
@@ -35,7 +35,5 @@ public class EncryptedCredentialPreference extends DialogPreference {
         persistString(text);
     }
 
-
-    //Todo add the setText method for the username and password
 
 }
