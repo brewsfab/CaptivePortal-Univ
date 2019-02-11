@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -30,10 +30,11 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
     private static final int WALL_GARDEN_STATUS_CODE = 302;
     private KeyguardManager keyguardManager;
     private String encryptedCred;
-    private TextView tv;
 
     public static final String URL = "http://clients3.google.com/generate_204";
     private SharedPreferences sharedPreferences;
+
+    private Snackbar mSnackbar;
 
 
     @Override
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
         CryptoHelper.setmCredentialNeededListener(this);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        mSnackbar = Snackbar.make(findViewById(R.id.main_layout),"",Snackbar.LENGTH_SHORT);
     }
 
     @Override
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
         if (encryptedCred != null) { //if credentials exist
             CryptoHelper.decryptText(encryptedCred);
         } else {
-            Utils.makeToast(this, "Please save your credentials");
+            mSnackbar.setText( "Please save your credentials on the settings").show();
         }
 
 
@@ -178,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
 //                            startCaptivePortalNotification();
                                 Utils.Log("IS WALL");
                             } else {
-                                Utils.Log("ALready connnected");
+                                mSnackbar.setText("Already connected").show();
                             }
                             return super.parseNetworkResponse(response);
                         }
@@ -189,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
 
             }
         }else{
-            Utils.Log("Not connected to the WIFI");
+            mSnackbar.setText("Not connected to the WIFI").show();
         }
 
 
