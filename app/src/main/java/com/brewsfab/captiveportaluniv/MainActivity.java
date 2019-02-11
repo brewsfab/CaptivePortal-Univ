@@ -131,60 +131,65 @@ public class MainActivity extends AppCompatActivity implements CryptoHelper.Cred
 
     private void getNetworkResponse(Bundle currentWifiConnection) {
 
-        String activeWifiName = currentWifiConnection.getString("wifiName");
-        Network activeNetwork = currentWifiConnection.getParcelable("network");
+        if(currentWifiConnection!=null) {
 
-        String preferredNetork = sharedPreferences.getString("preferred_network", null);
+            String activeWifiName = currentWifiConnection.getString("wifiName");
+            Network activeNetwork = currentWifiConnection.getParcelable("network");
 
-        if (activeWifiName != null && activeWifiName.equals(preferredNetork)) {//Preferred network detected, check the network
-            Utils.Log("Preferred network detected, start checking");
+            String preferredNetork = sharedPreferences.getString("preferred_network", null);
 
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-            if (cm != null) {
+            if (activeWifiName != null && activeWifiName.equals(preferredNetork)) {//Preferred network detected, check the network
+                Utils.Log("Preferred network detected, start checking");
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    cm.bindProcessToNetwork(activeNetwork);
-                } else {
-                    ConnectivityManager.setProcessDefaultNetwork(activeNetwork);
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+                if (cm != null) {
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        cm.bindProcessToNetwork(activeNetwork);
+                    } else {
+                        ConnectivityManager.setProcessDefaultNetwork(activeNetwork);
+                    }
+
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("def-response", "" + response);
+
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i("def-error", "" + error.networkResponse.statusCode);
+                            // 302 treated as error, let's assume it wall garden
+                            if (error.networkResponse.statusCode == WALL_GARDEN_STATUS_CODE) {
+                                Log.i("def-error", "Captive portal detected");
+                                decryptCredentials();
+                            }
+
+
+                        }
+                    }) {
+                        @Override
+                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                            int statusCode = response.statusCode;
+                            Log.i("def", "" + statusCode);
+                            if (statusCode != 204) {
+//                            startCaptivePortalNotification();
+                                Utils.Log("IS WALL");
+                            } else {
+                                Utils.Log("ALready connnected");
+                            }
+                            return super.parseNetworkResponse(response);
+                        }
+                    };
+
+                    NetworkRequester.getInstance(this).addToRequestQueue(stringRequest);
                 }
 
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("def-response", "" + response);
-
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("def-error", "" + error.networkResponse.statusCode);
-                        // 302 treated as error, let's assume it wall garden
-                        if (error.networkResponse.statusCode == WALL_GARDEN_STATUS_CODE) {
-                            Log.i("def-error", "Captive portal detected");
-                            decryptCredentials();
-                        }
-
-
-                    }
-                }) {
-                    @Override
-                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        int statusCode = response.statusCode;
-                        Log.i("def", "" + statusCode);
-                        if (statusCode != 204) {
-//                            startCaptivePortalNotification();
-                            Utils.Log("IS WALL");
-                        } else {
-                            Utils.Log("ALready connnected");
-                        }
-                        return super.parseNetworkResponse(response);
-                    }
-                };
-
-                NetworkRequester.getInstance(this).addToRequestQueue(stringRequest);
             }
-
+        }else{
+            Utils.Log("Not connected to the WIFI");
         }
 
 

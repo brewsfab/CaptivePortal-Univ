@@ -29,15 +29,16 @@ class Utils {
 //                if ((networkInfo.getType() == ConnectivityManager.TYPE_WIFI & networkInfo.isConnectedOrConnecting())) {
                     net = network;
                     wifiSSID = unQuote(networkInfo.getExtraInfo());
+                    Bundle netInfo = new Bundle(2);
+                    netInfo.putString("wifiName", wifiSSID);
+                    Utils.Log("wifiName:  " + wifiSSID);
+                    netInfo.putParcelable("network", net);
+                    return netInfo;
                 }
             }
         }
+        return null;
 
-        Bundle netInfo = new Bundle(2);
-        netInfo.putString("wifiName", wifiSSID);
-        Utils.Log("wifiName:  " + wifiSSID);
-        netInfo.putParcelable("network", net);
-        return netInfo;
 
     }
 
