@@ -37,7 +37,8 @@ public class PrefWifiEditTextPreferenceDialogFragmentCompat extends PreferenceDi
 
         Button detect_btn = view.findViewById(R.id.btn_detect);
 
-        final String activeWifiName = Utils.getCurrentWifiConnection(context).getString("wifiName");
+        Bundle connectionInfoBundle = Utils.getCurrentWifiConnection(context);
+        final String activeWifiName = connectionInfoBundle!=null?connectionInfoBundle.getString("wifiName"):"";
         Utils.Log("active wifi= "+activeWifiName);
 
         if(!(activeWifiName != null && activeWifiName.isEmpty())){
