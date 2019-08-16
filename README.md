@@ -5,4 +5,4 @@ Tired of typing my credentials every time I needed to use my university's WIFI, 
   - [x] Stores the symmetric keys into the Android Keystore
   - [x] Uses ConfirmCredential API for encrypting|decrypting the credentials
   - [x] Auto connect if logged less than 5 seconds ago
-  - [ ] Implement Certificate Pining to strengthen security again MIT attack
+  - [ ] Implement Certificate Pining to strengthen security against MITM attack
